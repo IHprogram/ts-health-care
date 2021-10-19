@@ -1,4 +1,20 @@
-class Score {
+interface Scoreable {
+  readonly totalScore: number;
+  render(): void;
+}
+
+interface Foodable {
+  element: HTMLDivElement;
+  clickEventHandler(): void;
+}
+
+interface Foodsable {
+  elements: NodeListOf<HTMLDivElement>;
+  readonly activeElements: HTMLDivElement[];
+  readonly activeElementsScore: number[];
+}
+
+class Score implements Scoreable {
   private static instance: Score;
   get totalScore() {
     const foods = Foods.getInstance();
@@ -20,7 +36,7 @@ class Score {
   }
 }
 
-class Food {
+class Food implements Foodable {
   constructor(public element: HTMLDivElement) {
     element.addEventListener('click', this.clickEventHandler.bind(this)); // clickEventHandler内のthisは、constructor内で使用されているthisと同じだ、と明示的にしている
   }
@@ -31,7 +47,7 @@ class Food {
   }
 }
 
-class Foods {
+class Foods implements Foodsable {
   private static instance: Foods;
   elements = document.querySelectorAll<HTMLDivElement>('.food');
   private _activeElements: HTMLDivElement[] = []; // active(food--active)になった要素が入る
